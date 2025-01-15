@@ -1,0 +1,33 @@
+const Tweet = require('../model/tweet');
+
+const getTweets = async (req, res) => {
+    try {
+        const tweets = await Tweet.find();
+        res.status(200).json(tweets);
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+const postTweet = async (req, res) => {
+    if (!req?.body?.username || !req?.body?.message) {
+        return res.status(400).json({'message': 'Missing username or tweet'});
+    }
+    if (req.body.username.length > 208) {
+        res.status(400);
+    }
+    try {
+        const tweet = await Tweet.create({
+            username: req.body.username,
+            message: req.body.message
+        });
+        res.status(201).json(tweet);
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+module.exports = {
+    getTweets,
+    postTweet
+}
